@@ -22,12 +22,14 @@ Key_word_answers = {
 	'You most certainly can!', 'Chances are slim, but you are lucky',
 	'I am tired of questions'	
 ]
+@answer_counter = 0
 @old_question_storage = []
 
 def user_questions
 	puts '----------------------------------'
 	puts 'Enter your question'
 	user_input = gets.strip.downcase
+	print_answers(user_input)
 	validate_eight_words(user_input)
 	split = user_input.split(' ').map(&:to_sym)
 	key_array = split & Key_word_answers.keys
@@ -60,12 +62,30 @@ def add_answer(eight_words)
 	else
 		puts 'Congratulations!  Your question allows you to add an answer!'
 		print 'Type it here:'
-		user_answer = gets.strip
-		@yes_no_answers.push(user_answer)
-		@old_question_storage.push(eight_words.pop)
-		user_questions
+		user_answer = gets.strip.downcase
+		if @yes_no_answers.include? user_answer
+				#do nothing
+		else
+			@yes_no_answers.push(user_answer)
+			@answer_counter += 1
+			user_questions
+		end
 	end
 end
+
+def print_answers(user_input)
+	case user_input
+	when "print answers"
+		puts 'Here are the answers:'
+	puts "#{@yes_no_answers}"
+	user_questions
+	when "reset answers"
+		@answer_counter.times do @yes_no_answers.pop
+		@answer_counter = 0
+		end
+	end
+end
+
 
 greeting
 user_questions
